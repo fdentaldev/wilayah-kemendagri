@@ -157,8 +157,8 @@ Workflow tersebut akan:
 2. Menginstall dependency.
 3. Menjalankan `pnpm generate`.
 4. Mengunggah hasil `dist/` sebagai artifact sementara.
-5. Menyalin isi `dist/` ke Cloudflare R2.
-6. Menghapus object di R2 yang sudah tidak ada di `dist/` menggunakan `--delete`.
+5. Menyalin isi `dist/` ke prefix `wilayah/` di Cloudflare R2 menggunakan `rclone`.
+6. Menghapus object di prefix tersebut yang sudah tidak ada di `dist/` menggunakan `rclone sync`.
 
 ### GitHub Secrets
 
