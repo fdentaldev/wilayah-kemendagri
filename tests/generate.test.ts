@@ -64,14 +64,14 @@ test('writes files grouped by parent', async () => {
     assert.deepEqual(JSON.parse(await readFile(join(output, 'provinces.json'), 'utf8')), [
       { id: '33', name: 'Jawa Tengah' },
     ]);
-    assert.deepEqual(JSON.parse(await readFile(join(output, 'provinces/33.json'), 'utf8')), [
+    assert.deepEqual(JSON.parse(await readFile(join(output, 'regencies/33.json'), 'utf8')), [
       { id: '3301', province_id: '33', name: 'Kabupaten Cilacap' },
       { id: '3302', province_id: '33', name: 'Kabupaten Banyumas' },
     ]);
-    assert.deepEqual(JSON.parse(await readFile(join(output, 'regencies/3301.json'), 'utf8')), [
+    assert.deepEqual(JSON.parse(await readFile(join(output, 'districts/3301.json'), 'utf8')), [
       { id: '330101', regency_id: '3301', name: 'Dayeuhluhur' },
     ]);
-    assert.deepEqual(JSON.parse(await readFile(join(output, 'districts/330101.json'), 'utf8')), [
+    assert.deepEqual(JSON.parse(await readFile(join(output, 'villages/330101.json'), 'utf8')), [
       { id: '3301012001', district_id: '330101', name: 'Danasri' },
       { id: '3301012002', district_id: '330101', name: "Pasi Kuala Ba'u" },
     ]);

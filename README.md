@@ -51,14 +51,14 @@ Contoh struktur output:
 ```text
 dist/
 ├── provinces.json
-├── provinces/
+├── regencies/
 │   ├── 11.json
 │   ├── 12.json
 │   └── 33.json
-├── regencies/
+├── districts/
 │   ├── 3301.json
 │   └── 3302.json
-└── districts/
+└── villages/
     ├── 330101.json
     └── 330102.json
 ```
@@ -76,7 +76,11 @@ Berisi seluruh provinsi:
 ]
 ```
 
-### `provinces/{provinceId}.json`
+### Endpoint kompatibel Emsifa
+
+Struktur file mengikuti endpoint API Wilayah Indonesia Emsifa. Setiap file di dalam folder berisi daftar wilayah turunan dari ID pada nama file.
+
+### `regencies/{provinceId}.json`
 
 Berisi seluruh kabupaten/kota di dalam provinsi:
 
@@ -90,7 +94,7 @@ Berisi seluruh kabupaten/kota di dalam provinsi:
 ]
 ```
 
-### `regencies/{regencyId}.json`
+### `districts/{regencyId}.json`
 
 Berisi seluruh kecamatan di dalam kabupaten/kota:
 
@@ -104,7 +108,7 @@ Berisi seluruh kecamatan di dalam kabupaten/kota:
 ]
 ```
 
-### `districts/{districtId}.json`
+### `villages/{districtId}.json`
 
 Berisi seluruh desa/kelurahan di dalam kecamatan:
 

@@ -186,13 +186,13 @@ export async function writeCollections(collections: Collections, output = output
 
   await writeJson(join(output, 'provinces.json'), collections.provinces);
   for (const province of collections.provinces) {
-    await writeJson(join(output, 'provinces', `${province.id}.json`), collections.regencies.get(province.id) ?? []);
+    await writeJson(join(output, 'regencies', `${province.id}.json`), collections.regencies.get(province.id) ?? []);
   }
   for (const [regencyId, districts] of collections.districts) {
-    await writeJson(join(output, 'regencies', `${regencyId}.json`), districts);
+    await writeJson(join(output, 'districts', `${regencyId}.json`), districts);
   }
   for (const [districtId, villages] of collections.villages) {
-    await writeJson(join(output, 'districts', `${districtId}.json`), villages);
+    await writeJson(join(output, 'villages', `${districtId}.json`), villages);
   }
 }
 
