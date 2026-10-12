@@ -1,0 +1,88 @@
+name: Generate and Sync JSON to R2
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "db/**"
+      - "generate.ts"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/generate-and-sync-r2.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: generate-and-sync-r2-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    name: Generate static JSON
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.10.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate project
+        run: pnpm check
+
+      - name: Generate JSON files
+        run: pnpm generate
+
+      - name: Upload generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: wilayah-json
+          path: dist/
+          if-no-files-found: error
+          retention-days: 1
+
+  sync-r2:
+    name: Sync JSON to Cloudflare R2
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: generate
+    permissions: {}
+
+    steps:
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: wilayah-json
+          path: dist/
+
+      - name: Configure AWS credentials for R2
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          aws-region: auto
+
+      - name: Sync JSON files to R2
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+          R2_PREFIX: wilayah
+        run: >-
+          aws s3 sync dist/ s3://${R2_BUCKET_NAME}/${R2_PREFIX}/
+          --endpoint-url https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com
+          --delete

@@ -1,0 +1,32 @@
+{
+  "name": "wilayah-kemendagri",
+  "version": "1.0.0",
+  "description": "Generator data wilayah Indonesia dari dump SQL Kemendagri menjadi JSON statis.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "tsx generate.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "check": "pnpm typecheck && pnpm test",
+    "generate:check": "pnpm check && pnpm generate"
+  },
+  "keywords": [
+    "indonesia",
+    "kemendagri",
+    "wilayah",
+    "provinsi",
+    "kabupaten",
+    "kecamatan",
+    "desa",
+    "json"
+  ],
+  "author": "Imam Satibin",
+  "license": "MIT",
+  "packageManager": "pnpm@11.10.0",
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

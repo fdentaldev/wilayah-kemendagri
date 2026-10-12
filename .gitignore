@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Generated static JSON output
+dist/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Logs and temporary files
+*.log
+*.tmp
