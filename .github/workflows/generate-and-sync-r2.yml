@@ -71,24 +71,25 @@ jobs:
           path: dist/
 
       - name: Install rclone
+        run: curl https://rclone.org/install.sh | sudo bash
+
+      - name: Configure rclone for R2
         run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends -y rclone
-          rclone version
+          mkdir -p ~/.config/rclone
+          cat > ~/.config/rclone/rclone.conf <<EOF
+          [r2]
+          type = s3
+          provider = Cloudflare
+          access_key_id = ${{ secrets.R2_ACCESS_KEY_ID }}
+          secret_access_key = ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          endpoint = https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
+          acl = public-read
+          EOF
 
       - name: Sync JSON files to R2
-        env:
-          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
-          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
-          R2_PREFIX: wilayah
-          RCLONE_CONFIG_R2_TYPE: s3
-          RCLONE_CONFIG_R2_PROVIDER: Cloudflare
-          RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          RCLONE_CONFIG_R2_ENDPOINT: https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
-          RCLONE_CONFIG_R2_NO_CHECK_BUCKET: "true"
-        run: >-
-          rclone sync dist/ r2:${R2_BUCKET_NAME}/${R2_PREFIX}/
-          --fast-list
-          --stats-one-line
-          --s3-no-check-bucket
+        run: |
+          rclone sync ./dist r2:${{ secrets.R2_BUCKET_NAME }}/wilayah \
+            --checksum \
+            --transfers=20 \
+            --no-update-modtime \
+            --verbose
